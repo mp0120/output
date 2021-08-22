@@ -4,54 +4,54 @@ import { useEffect, useState } from 'react';
 
 
 const updateTicketQuality = (product, sellIn) => {
-  let quality;
+    let quality;
 
-  if (product.sellIn < 10 && product.sellIn > 0) {
-    quality = product.quality + 2;
-  } else {
-    quality = product.quality + 1;
-  }
+    if (product.sellIn < 10 && product.sellIn > 0) {
+        quality = product.quality + 2;
+    } else {
+        quality = product.quality + 1;
+    }
 
-  if (product.sellIn === 0) quality = 0;
+    if (product.sellIn === 0) quality = 0;
 
-  return {
-    ...product,
-    sellIn,
-    quality,
-  }
+    return {
+        ...product,
+        sellIn,
+        quality,
+    }
 };
 
 const updateNormalQuality = (product, sellIn) => {
-  let quality;
+    let quality;
 
-  if (product.sellIn === 0 || product.isSecondHand) {
-    quality = product.quality - 2;
-  } else {
-    quality = product.quality - 1;
-  }
+    if (product.sellIn === 0 || product.isSecondHand) {
+        quality = product.quality - 2;
+    } else {
+        quality = product.quality - 1;
+    }
 
-  if (quality < 0) quality = 0;
+    if (quality < 0) quality = 0;
 
-  return {
-    ...product,
-    sellIn,
-    quality,
-  };
+    return {
+        ...product,
+        sellIn,
+        quality,
+    };
 }
 
 export function updateQuality(products) {
-  return products.map(
-    item => {
-      let sellIn = item.sellIn - 1;
-      if (sellIn < 0) sellIn = 0;
+    return products.map(
+        item => {
+            let sellIn = item.sellIn - 1;
+            if (sellIn < 0) sellIn = 0;
 
-      switch (item.type) {
-        case 'TICKETS': return updateTicketQuality(item, sellIn);
-        case 'NORMAL': return updateNormalQuality(item, sellIn);
-        default: return item;
-      }
-    }
-  );
+            switch (item.type) {
+                case 'TICKETS': return updateTicketQuality(item, sellIn);
+                case 'NORMAL': return updateNormalQuality(item, sellIn);
+                default: return item;
+            }
+        }
+    );
 }
 
 export function Task2() {
