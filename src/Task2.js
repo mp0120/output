@@ -1,66 +1,42 @@
 /* eslint-disable */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+
+const updateTicketQuality = (product, sellIn) => {
+  let quality = product.quality + (product.sellIn < 10 && product.sellIn > 0 ? 2 : 1);
+  if (product.sellIn === 0) quality = 0;
+
+  return {
+    ...product,
+    sellIn,
+    quality,
+  }
+};
+
+const updateNormalQuality = (product, sellIn) => {
+  let quality = product.quality - (product.sellIn === 0 || product.isSecondHand ? 2 : 1);
+  if (quality < 0) quality = 0;
+
+  return {
+    ...product,
+    sellIn,
+    quality,
+  };
+}
 
 export function updateQuality(products) {
-  for (let i = 0; i < products.length; i++) {
-    if (products[i].type == "TICKETS" && products[i].sellIn > 10) {
-      products[i].quality = products[i].quality + 1;
-      products[i].sellIn = products[i].sellIn - 1;
-    } else {
-      if (
-        products[i].type == "TICKETS" &&
-        products[i].sellIn < 10 &&
-        products[i].sellIn > 1
-      ) {
-        products[i].quality = products[i].quality + 2;
-        products[i].sellIn = products[i].sellIn - 1;
-      } else {
-        if (products[i].type == "TICKETS" && products[i].sellIn <= 1) {
-          products[i].quality = 0;
-          products[i].sellIn = 0;
-        }
+  return products.map(
+    item => {
+      const sellIn = item.sellIn > 0 ? item.sellIn - 1 : item.sellIn;
 
-        if (
-          products[i].type == "NORMAL" &&
-          products[i].sellIn <= 0 &&
-          products[i].quality > 0
-        ) {
-          products[i].quality = products[i].quality - 2;
-          products[i].sellIn = products[i].sellIn - 1;
-        }
-
-        if (
-          products[i].type == "NORMAL" &&
-          products[i].sellIn > 0 &&
-          products[i].quality == 0
-        ) {
-          products[i].quality = 0;
-          products[i].sellIn = products[i].sellIn - 1;
-        } else {
-          if (
-            products[i].type == "NORMAL" &&
-            products[i].sellIn > 0 &&
-            products[i].quality > 0
-          ) {
-            products[i].quality = products[i].quality - products[i].isSecondHand ? 2 : 1;
-            products[i].sellIn = products[i].sellIn - 1;
-          }
-        }
+      switch (item.type) {
+        case 'TICKETS': return updateTicketQuality(item, sellIn);
+        case 'NORMAL': return updateNormalQuality(item, sellIn);
+        default: return item;
       }
     }
-
-    if (products[i].sellIn <= 0) {
-      products[i].sellIn = 0;
-    }
-
-    if (products[i].quality <= 0) {
-      products[i].quality = 0;
-    }
-  }
-
-  return products;
+  );
 }
 
 export function Task2() {
@@ -116,6 +92,7 @@ export function Task2() {
 
         const updated = updateQuality(products);
         console.log(updated);
-    }, []);
+    }, [updated]);
+
     return null;
 }
